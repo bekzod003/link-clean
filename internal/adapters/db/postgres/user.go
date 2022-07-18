@@ -1,1 +1,1 @@
-package reportitories
+package postgres

@@ -1,11 +1,10 @@
 package service
 
+import "github.com/bekzod003/link-clean/internal/domain/entities"
+
 type UserStorage interface {
-	// Create(user *entity.User) error
-	// Get(id int) (*User, error)
-	// GetByEmail(email string) (*User, error)
-	// GetByUsername(username string) (*User, error)
-	// GetByToken(token string) (*User, error)
-	// Update(user *User) error
-	// Delete(id int) error
+	Create(user *entities.User) error
+	Get(id int) (*entities.User, error)
+	Update(user *entities.User) error
+	Delete(id int) error
 }
