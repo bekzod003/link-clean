@@ -8,6 +8,7 @@ CREATE TABLE "users" (
 
 CREATE TABLE "links" (
   "id" bigserial PRIMARY KEY,
+  "url" varchar NOT NULL,
   "title" varchar NOT NULL,
   "description" text,
   "user_id" bigint NOT NULL,

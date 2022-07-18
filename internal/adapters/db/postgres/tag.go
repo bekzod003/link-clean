@@ -103,7 +103,7 @@ func (t *tagStorage) Update(tag *entities.UpdateTag) error {
 		ctx,
 		`UPDATE tags SET title = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2`,
 		tag.Title,
-		tag.Id,
+		tag.ID,
 	); err != nil {
 		return err
 	}

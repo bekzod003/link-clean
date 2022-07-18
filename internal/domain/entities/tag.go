@@ -17,6 +17,6 @@ type CreateTag struct {
 }
 
 type UpdateTag struct {
-	Id    int64
+	ID    int64
 	Title string
 }

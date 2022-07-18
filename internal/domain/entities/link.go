@@ -10,13 +10,14 @@ type FullLink struct {
 }
 
 type Link struct {
-	Id          int64     `json:"id"`
+	ID          int64     `json:"id"`
+	URL         string    `json:"url"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"-"`
 	UpdatedAt   time.Time `json:"-"`
 	DeletedAt   int64     `json:"-"`
 
-	UserId int64 `json:"user_id"`
-	TagId  int64 `json:"tag_id"`
+	UserID int64 `json:"user_id"`
+	TagID  int64 `json:"tag_id"`
 }

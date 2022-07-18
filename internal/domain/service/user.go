@@ -3,8 +3,7 @@ package service
 import "github.com/bekzod003/link-clean/internal/domain/entities"
 
 type UserStorage interface {
-	Create(user *entities.User) error
-	Get(id int) (*entities.User, error)
+	Create(user *entities.User) (int64, error)
 	Update(user *entities.User) error
-	Delete(id int) error
+	Get(id int64) (*entities.User, error)
 }
