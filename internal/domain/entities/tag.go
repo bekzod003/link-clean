@@ -11,6 +11,11 @@ type Tag struct {
 	DeletedAt int64
 }
 
+type CreateTag struct {
+	Title  string
+	UserID int64
+}
+
 type UpdateTag struct {
 	Id    int64
 	Title string

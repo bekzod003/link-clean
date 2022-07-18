@@ -16,14 +16,19 @@ func NewTagStorage(db *pgxpool.Pool) *tagStorage {
 	return &tagStorage{db: db}
 }
 
-func (t *tagStorage) Create(tag *entities.Tag) error {
+func (t *tagStorage) Create(tag *entities.CreateTag) (id int64, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	_, err := t.db.Exec(ctx, "INSERT INTO tags (title, user_id) VALUES ($1, $2)", tag.Title, tag.UserID)
-	return err
+	err = t.db.QueryRow(
+		ctx,
+		"INSERT INTO tags (title, user_id) VALUES ($1, $2) RETURNING id",
+		tag.Title,
+		tag.UserID,
+	).Scan(&id)
+	return id, err
 }
 
-func (t *tagStorage) Get(id int) (*entities.Tag, error) {
+func (t *tagStorage) Get(id int64) (*entities.Tag, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
@@ -52,7 +57,7 @@ func (t *tagStorage) Get(id int) (*entities.Tag, error) {
 	return &tag, nil
 }
 
-func (t *tagStorage) GetByUser(userID int) ([]*entities.Tag, error) {
+func (t *tagStorage) GetByUser(userID int64) ([]*entities.Tag, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
@@ -106,7 +111,7 @@ func (t *tagStorage) Update(tag *entities.UpdateTag) error {
 	return nil
 }
 
-func (t *tagStorage) Delete(id int) error {
+func (t *tagStorage) Delete(id int64) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
