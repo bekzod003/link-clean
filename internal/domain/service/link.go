@@ -1,6 +1,8 @@
 package service
 
-import "github.com/bekzod003/link-clean/internal/domain/entities"
+import (
+	"github.com/bekzod003/link-clean/internal/domain/entities"
+)
 
 type linkStorage interface {
 	Create(link *entities.Link) error
@@ -11,10 +13,12 @@ type linkStorage interface {
 	Delete(id int) error
 }
 
-type LinkService struct {
+type linkService struct {
 	linkStorage linkStorage
 }
 
-func (s *LinkService) GetAllLinks(userID int64) error {
-	return nil
+func NewLinkService(linkStorage linkStorage) *linkService {
+	return &linkService{
+		linkStorage: linkStorage,
+	}
 }

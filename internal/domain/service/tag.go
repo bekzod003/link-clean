@@ -1,6 +1,8 @@
 package service
 
-import "github.com/bekzod003/link-clean/internal/domain/entities"
+import (
+	"github.com/bekzod003/link-clean/internal/domain/entities"
+)
 
 type TagStorage interface {
 	Create(tag *entities.CreateTag) (int64, error)
@@ -14,8 +16,10 @@ type tagService struct {
 	storage TagStorage
 }
 
-func NewTagStorage(storage TagStorage) *tagService {
-	return &tagService{storage: storage}
+func NewTagService(storage TagStorage) *tagService {
+	return &tagService{
+		storage: storage,
+	}
 }
 
 func (t *tagService) Create(tag *entities.CreateTag) (int64, error) {
