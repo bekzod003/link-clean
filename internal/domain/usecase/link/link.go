@@ -19,8 +19,11 @@ type LinkUsecase struct {
 	log         logger.LoggerI
 }
 
-func NewLinkUsecase() *LinkUsecase {
-	return &LinkUsecase{}
+func NewLinkUsecase(ls linkService, log logger.LoggerI) *LinkUsecase {
+	return &LinkUsecase{
+		linkService: ls,
+		log:         log,
+	}
 }
 
 func (l *LinkUsecase) GetByUser(userId int64) ([]*entities.Link, error) {

@@ -27,4 +27,5 @@ func main() {
 	// log := logger.NewLogger(cfg.ServiceName, loggerLevel)
 	defer logger.Cleanup(log)
 
+	log.Info("Starting link bot")
 }
