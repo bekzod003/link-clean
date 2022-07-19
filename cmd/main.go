@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/bekzod003/link-clean/config"
 	"github.com/bekzod003/link-clean/pkg/logger"
 	"github.com/gin-gonic/gin"
@@ -11,7 +9,6 @@ import (
 func main() {
 	cfg := config.GetConfig()
 
-	fmt.Printf("cfg: %v\n", cfg)
 	loggerLevel := logger.LevelDebug
 
 	switch cfg.Environment {
