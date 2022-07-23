@@ -16,10 +16,7 @@ func NewLinkStorage(db postgresql.Client) *linkStorage {
 	return &linkStorage{db: db}
 }
 
-func (l *linkStorage) Create(link *entities.Link) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
+func (l *linkStorage) Create(ctx context.Context, link *entities.Link) error {
 	_, err := l.db.Exec(
 		ctx,
 		`INSERT INTO "links"
@@ -35,10 +32,7 @@ func (l *linkStorage) Create(link *entities.Link) error {
 	return err
 }
 
-func (l *linkStorage) Get(id int) (*entities.Link, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
+func (l *linkStorage) Get(ctx context.Context, id int) (*entities.Link, error) {
 	var link entities.Link
 	err := l.db.QueryRow(
 		ctx,
@@ -67,10 +61,7 @@ func (l *linkStorage) Get(id int) (*entities.Link, error) {
 	return &link, err
 }
 
-func (l *linkStorage) GetByUser(userID int) ([]*entities.Link, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
+func (l *linkStorage) GetByUser(ctx context.Context, userID int) ([]*entities.Link, error) {
 	var links []*entities.Link
 	rows, err := l.db.Query(
 		ctx,
@@ -111,10 +102,7 @@ func (l *linkStorage) GetByUser(userID int) ([]*entities.Link, error) {
 	return links, nil
 }
 
-func (l *linkStorage) GetByTag(tagID int) ([]*entities.Link, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
+func (l *linkStorage) GetByTag(ctx context.Context, tagID int) ([]*entities.Link, error) {
 	var links []*entities.Link
 	rows, err := l.db.Query(
 		ctx,
@@ -155,10 +143,7 @@ func (l *linkStorage) GetByTag(tagID int) ([]*entities.Link, error) {
 	return links, nil
 }
 
-func (l *linkStorage) Update(link *entities.Link) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
+func (l *linkStorage) Update(ctx context.Context, link *entities.Link) error {
 	_, err := l.db.Exec(
 		ctx,
 		`UPDATE "links" SET
@@ -178,10 +163,7 @@ func (l *linkStorage) Update(link *entities.Link) error {
 	return err
 }
 
-func (l *linkStorage) Delete(id int) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
+func (l *linkStorage) Delete(ctx context.Context, id int) error {
 	_, err := l.db.Exec(
 		ctx,
 		`UPDATE "links" SET deleted_at = $1 WHERE id = $2`,

@@ -2,10 +2,8 @@ package postgres
 
 import (
 	"context"
-	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
-	"time"
-
 	"github.com/bekzod003/link-clean/internal/domain/entities"
+	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
 )
 
 type userStorage struct {
@@ -16,9 +14,7 @@ func NewUserStorage(db postgresql.Client) *userStorage {
 	return &userStorage{db: db}
 }
 
-func (u *userStorage) Create(user *entities.User) (int64, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
+func (u *userStorage) Create(ctx context.Context, user *entities.User) (int64, error) {
 	_, err := u.db.Exec(
 		ctx,
 		`INSERT INTO "users"
@@ -33,10 +29,7 @@ func (u *userStorage) Create(user *entities.User) (int64, error) {
 	return user.ID, err
 }
 
-func (u *userStorage) Update(user *entities.User) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
+func (u *userStorage) Update(ctx context.Context, user *entities.User) error {
 	_, err := u.db.Exec(
 		ctx,
 		`UPDATE "users"
@@ -53,10 +46,7 @@ func (u *userStorage) Update(user *entities.User) error {
 	return err
 }
 
-func (u *userStorage) Get(id int64) (*entities.User, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
+func (u *userStorage) Get(ctx context.Context, id int64) (*entities.User, error) {
 	var user entities.User
 	row := u.db.QueryRow(
 		ctx,

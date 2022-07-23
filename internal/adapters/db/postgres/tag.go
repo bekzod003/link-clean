@@ -16,9 +16,7 @@ func NewTagStorage(db postgresql.Client) *tagStorage {
 	return &tagStorage{db: db}
 }
 
-func (t *tagStorage) Create(tag *entities.CreateTag) (id int64, err error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
+func (t *tagStorage) Create(ctx context.Context, tag *entities.CreateTag) (id int64, err error) {
 	err = t.db.QueryRow(
 		ctx,
 		"INSERT INTO tags (title, user_id) VALUES ($1, $2) RETURNING id",
@@ -28,10 +26,7 @@ func (t *tagStorage) Create(tag *entities.CreateTag) (id int64, err error) {
 	return id, err
 }
 
-func (t *tagStorage) Get(id int64) (*entities.Tag, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
+func (t *tagStorage) Get(ctx context.Context, id int64) (*entities.Tag, error) {
 	var tag entities.Tag
 	row := t.db.QueryRow(
 		ctx,
@@ -57,10 +52,7 @@ func (t *tagStorage) Get(id int64) (*entities.Tag, error) {
 	return &tag, nil
 }
 
-func (t *tagStorage) GetByUser(userID int64) ([]*entities.Tag, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
+func (t *tagStorage) GetByUser(ctx context.Context, userID int64) ([]*entities.Tag, error) {
 	var tags []*entities.Tag
 	rows, err := t.db.Query(
 		ctx,
@@ -95,10 +87,7 @@ func (t *tagStorage) GetByUser(userID int64) ([]*entities.Tag, error) {
 	return tags, nil
 }
 
-func (t *tagStorage) Update(tag *entities.UpdateTag) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
+func (t *tagStorage) Update(ctx context.Context, tag *entities.UpdateTag) error {
 	if _, err := t.db.Exec(
 		ctx,
 		`UPDATE tags SET title = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2`,
@@ -111,10 +100,7 @@ func (t *tagStorage) Update(tag *entities.UpdateTag) error {
 	return nil
 }
 
-func (t *tagStorage) Delete(id int64) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
+func (t *tagStorage) Delete(ctx context.Context, id int64) error {
 	if _, err := t.db.Exec(
 		ctx,
 		`UPDATE tags SET deleted_at = $1 WHERE id = $2`,
