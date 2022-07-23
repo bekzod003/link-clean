@@ -2,7 +2,11 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"github.com/bekzod003/link-clean/config"
+	"github.com/bekzod003/link-clean/internal/adapters/db/postgres"
+	"github.com/bekzod003/link-clean/internal/domain/service"
+	"github.com/bekzod003/link-clean/internal/domain/usecase/link"
 	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
 	"github.com/bekzod003/link-clean/pkg/logger"
 	"go.uber.org/zap"
@@ -23,8 +27,32 @@ func Run(cfg *config.Config) {
 	if err != nil {
 		log.Fatal("Error while getting postgres new client", zap.Error(err))
 	}
-	defer poolConnection.Close()
+	defer func() {
+		log.Info("Closing pool connection")
+		poolConnection.Close()
+	}()
 
+	linkStorage := postgres.NewLinkStorage(poolConnection)
+	userStorage := postgres.NewUserStorage(poolConnection)
+	tagStorage := postgres.NewTagStorage(poolConnection)
+
+	linkService := service.NewLinkService(linkStorage, log)
+	tagService := service.NewTagService(tagStorage, log)
+	userService := service.NewUserService(userStorage, log)
+
+	useCase := link.NewLinkUsecase(link.ConstructorRequest{
+		LinkService: linkService,
+		TagService:  tagService,
+		UserService: userService,
+		Log:         log,
+	})
+
+	// testing, @TODO: remove it)
+	user, err := useCase.GetUser(1)
+	if err != nil {
+		log.Error("Error while getting user", zap.Error(err))
+	}
+	fmt.Printf("Some random user: %+v\n", user)
 }
 
 func getPostgresClientConfig(cfg *config.Config) postgresql.ClientConfig {
