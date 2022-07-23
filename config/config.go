@@ -21,6 +21,13 @@ type Config struct {
 		User     string `env:"POSTGRES_USER" env-required:"true"`
 		Password string `env:"POSTGRES_PASSWORD" env-required:"true"`
 		DBName   string `env:"POSTGRES_DB_NAME" env-required:"true"`
+
+		PoolConfig struct {
+			MaxConns                int32 `env:"POSTGRES_MAX_CONNS" env-default:"30"`
+			MaxConnIdleMinute       int   `env:"POSTGRES_MAX_CONN_IDLE_MINUTES" env-default:"40"`
+			MaxConnLifetimeMinute   int   `env:"POSTGRES_CONN_LIFE_MINUTES" env-default:"30"`
+			HealthCheckPeriodMinute int   `env:"POSTGRES_HEALTH_CHECK_PERIOD_MINUTES" env-default:"10"`
+		}
 	}
 }
 
