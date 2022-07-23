@@ -7,7 +7,7 @@ require (
 	github.com/jackc/pgx/v4 v4.16.1
 	github.com/streamingfast/logging v0.0.0-20220511154537-ce373d264338
 	go.uber.org/zap v1.21.0
-	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
+	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
 )
 
 require (

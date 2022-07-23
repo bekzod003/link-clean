@@ -1,6 +1,8 @@
 package config
 
 import (
+	"github.com/bekzod003/link-clean/pkg/logger"
+	"github.com/gin-gonic/gin"
 	"log"
 	"sync"
 
@@ -29,6 +31,8 @@ type Config struct {
 			HealthCheckPeriodMinute int   `env:"POSTGRES_HEALTH_CHECK_PERIOD_MINUTES" env-default:"10"`
 		}
 	}
+
+	LoggerLevel string `env-default:"debug"`
 }
 
 var (
@@ -54,6 +58,19 @@ func getConfig() *Config {
 	if err = cleanenv.ReadEnv(&cfgTemp); err != nil {
 		log.Fatal("Error while getting config: ", err)
 		return nil
+	}
+
+	// i don't like it being here )
+	switch cfgTemp.Environment {
+	case DebugMode:
+		cfgTemp.LoggerLevel = logger.LevelDebug
+		gin.SetMode(gin.DebugMode)
+	case TestMode:
+		cfgTemp.LoggerLevel = logger.LevelDebug
+		gin.SetMode(gin.TestMode)
+	default:
+		cfgTemp.LoggerLevel = logger.LevelInfo
+		gin.SetMode(gin.ReleaseMode)
 	}
 
 	return &cfgTemp
