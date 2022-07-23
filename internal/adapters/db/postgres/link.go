@@ -32,7 +32,7 @@ func (l *linkStorage) Create(ctx context.Context, link *entities.Link) error {
 	return err
 }
 
-func (l *linkStorage) Get(ctx context.Context, id int) (*entities.Link, error) {
+func (l *linkStorage) Get(ctx context.Context, id int64) (*entities.Link, error) {
 	var link entities.Link
 	err := l.db.QueryRow(
 		ctx,
@@ -61,7 +61,7 @@ func (l *linkStorage) Get(ctx context.Context, id int) (*entities.Link, error) {
 	return &link, err
 }
 
-func (l *linkStorage) GetByUser(ctx context.Context, userID int) ([]*entities.Link, error) {
+func (l *linkStorage) GetByUser(ctx context.Context, userID int64) ([]*entities.Link, error) {
 	var links []*entities.Link
 	rows, err := l.db.Query(
 		ctx,
@@ -102,7 +102,7 @@ func (l *linkStorage) GetByUser(ctx context.Context, userID int) ([]*entities.Li
 	return links, nil
 }
 
-func (l *linkStorage) GetByTag(ctx context.Context, tagID int) ([]*entities.Link, error) {
+func (l *linkStorage) GetByTag(ctx context.Context, tagID int64) ([]*entities.Link, error) {
 	var links []*entities.Link
 	rows, err := l.db.Query(
 		ctx,
@@ -163,7 +163,7 @@ func (l *linkStorage) Update(ctx context.Context, link *entities.Link) error {
 	return err
 }
 
-func (l *linkStorage) Delete(ctx context.Context, id int) error {
+func (l *linkStorage) Delete(ctx context.Context, id int64) error {
 	_, err := l.db.Exec(
 		ctx,
 		`UPDATE "links" SET deleted_at = $1 WHERE id = $2`,

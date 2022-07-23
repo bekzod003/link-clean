@@ -55,9 +55,7 @@ func (u *userStorage) Get(ctx context.Context, id int64) (*entities.User, error)
 			username,
 			first_name,
 			last_name,
-			created_at,
-			updated_at,
-			deleted_at
+			created_at
 		FROM users WHERE id = $1`,
 		id,
 	)
