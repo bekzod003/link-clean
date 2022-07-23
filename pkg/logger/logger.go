@@ -37,7 +37,7 @@ type loggerImpl struct {
 }
 
 // NewLogger ...
-func NewLogger(namespace string, level string) LoggerI {
+func NewLogger(namespace, level string) LoggerI {
 	if level == "" {
 		level = LevelInfo
 	}
