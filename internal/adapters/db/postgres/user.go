@@ -2,17 +2,17 @@ package postgres
 
 import (
 	"context"
+	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
 	"time"
 
 	"github.com/bekzod003/link-clean/internal/domain/entities"
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type userStorage struct {
-	db *pgxpool.Pool
+	db postgresql.Client
 }
 
-func NewUserStorage(db *pgxpool.Pool) *userStorage {
+func NewUserStorage(db postgresql.Client) *userStorage {
 	return &userStorage{db: db}
 }
 

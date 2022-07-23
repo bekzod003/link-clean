@@ -2,17 +2,17 @@ package postgres
 
 import (
 	"context"
+	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
 	"time"
 
 	"github.com/bekzod003/link-clean/internal/domain/entities"
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type tagStorage struct {
-	db *pgxpool.Pool
+	db postgresql.Client
 }
 
-func NewTagStorage(db *pgxpool.Pool) *tagStorage {
+func NewTagStorage(db postgresql.Client) *tagStorage {
 	return &tagStorage{db: db}
 }
 

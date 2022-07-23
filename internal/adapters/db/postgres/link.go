@@ -2,17 +2,17 @@ package postgres
 
 import (
 	"context"
+	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
 	"time"
 
 	"github.com/bekzod003/link-clean/internal/domain/entities"
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type linkStorage struct {
-	db *pgxpool.Pool
+	db postgresql.Client
 }
 
-func NewLinkStorage(db *pgxpool.Pool) *linkStorage {
+func NewLinkStorage(db postgresql.Client) *linkStorage {
 	return &linkStorage{db: db}
 }
 
