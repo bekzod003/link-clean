@@ -31,7 +31,7 @@ type ClientConfig struct {
 	Login    string
 	Password string
 	Host     string
-	Port     string
+	Port     int
 	DBName   string
 
 	PoolConfig
@@ -49,7 +49,7 @@ type PoolConfig struct {
 // Constructor for postgres client
 func NewClient(ctx context.Context, req ClientConfig) (pool *pgxpool.Pool, err error) {
 	req.connStirng = fmt.Sprintf(
-		"posgresql://%s:%s@%s:%s/%s",
+		"postgresql://%s:%s@%s:%d/%s",
 		req.Login,
 		req.Password,
 		req.Host,
@@ -61,7 +61,7 @@ func NewClient(ctx context.Context, req ClientConfig) (pool *pgxpool.Pool, err e
 
 	pool, err = getConnectionPool(ctx, req.PoolConfig)
 	if err != nil {
-		log.Fatal("Error while getting pool connection", err)
+		log.Fatal("Error while getting pool connection: ", err)
 	}
 	return
 }
