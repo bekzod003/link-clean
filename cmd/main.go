@@ -6,9 +6,9 @@ import (
 )
 
 func main() {
-	println("Config intializing...")
+	println("Config initializing...")
 	cfg := config.GetConfig()
-	println("Config intialized successfully")
+	println("Config initialized successfully")
 
 	app.Run(cfg)
 }
