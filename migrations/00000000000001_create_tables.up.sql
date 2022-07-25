@@ -1,5 +1,5 @@
 CREATE TABLE "users" (
-  "id" bigint PRIMARY KEY,
+  "id" bigserial PRIMARY KEY,
   "username" varchar,
   "first_name" varchar,
   "last_name" varchar,
