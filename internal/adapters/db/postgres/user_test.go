@@ -13,7 +13,7 @@ func createUser(ctx context.Context, storage *userStorage) (int64, error) {
 	userID, err := storage.Create(
 		ctx,
 		&entities.User{
-			ID:        10,
+			ID:        7,
 			Username:  "username",
 			FirstName: "firstname",
 			LastName:  "lastname",
@@ -46,7 +46,7 @@ func TestUserStorage_Get(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	res, err := storage.Get(ctx, 1)
+	res, err := storage.Get(ctx, 5)
 	if err != nil {
 		t.Error("Error while getting user by id:", err)
 	}
