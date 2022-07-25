@@ -7,6 +7,7 @@ import (
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"log"
+	"sync"
 	"time"
 )
 
@@ -45,24 +46,33 @@ type PoolConfig struct {
 	HealthCheckPeriodMinutes int
 }
 
-// Constructor for postgres client
-func NewClient(ctx context.Context, req ClientConfig) (pool *pgxpool.Pool, err error) {
-	req.connStirng = fmt.Sprintf(
-		"postgresql://%s:%s@%s:%d/%s",
-		req.Login,
-		req.Password,
-		req.Host,
-		req.Port,
-		req.DBName,
-	)
-	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
-	defer cancel()
+var (
+	pool *pgxpool.Pool
+	once sync.Once
+)
 
-	pool, err = getConnectionPool(ctx, req.PoolConfig)
-	if err != nil {
-		log.Fatal("Error while getting pool connection: ", err)
-	}
-	return
+// Constructor for postgres client
+func NewClient(ctx context.Context, req ClientConfig) (*pgxpool.Pool, error) {
+	var err error
+	once.Do(func() {
+		req.connStirng = fmt.Sprintf(
+			"postgresql://%s:%s@%s:%d/%s",
+			req.Login,
+			req.Password,
+			req.Host,
+			req.Port,
+			req.DBName,
+		)
+		ctx, cancel := context.WithTimeout(ctx, time.Second*3)
+		defer cancel()
+
+		pool, err = getConnectionPool(ctx, req.PoolConfig)
+		if err != nil {
+			log.Fatal("Error while getting pool connection: ", err)
+		}
+	})
+
+	return pool, err
 }
 
 func getConnectionPool(ctx context.Context, configRequest PoolConfig) (pool *pgxpool.Pool, err error) {
