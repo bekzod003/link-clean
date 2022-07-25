@@ -9,6 +9,10 @@ import (
 	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
 )
 
+var (
+	deafultTimeOut = time.Second * 10
+)
+
 func newClient() postgresql.Client {
 	cfg := config.GetConfig()
 

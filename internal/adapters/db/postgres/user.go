@@ -15,17 +15,17 @@ func NewUserStorage(db postgresql.Client) *userStorage {
 }
 
 func (u *userStorage) Create(ctx context.Context, user *entities.User) (int64, error) {
-	_, err := u.db.Exec(
+	err := u.db.QueryRow(
 		ctx,
 		`INSERT INTO "users"
-			(id, username, first_name, last_name)
+			(username, first_name, last_name)
 		VALUES
-			($1, $2, $3, $4)`,
-		user.ID,
+			($1, $2, $3)
+		RETURNING id`,
 		user.Username,
 		user.FirstName,
 		user.LastName,
-	)
+	).Scan(&user.ID)
 	return user.ID, err
 }
 
