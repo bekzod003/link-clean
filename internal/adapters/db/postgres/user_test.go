@@ -3,9 +3,11 @@ package postgres
 import (
 	"context"
 	"fmt"
-	"github.com/bekzod003/link-clean/internal/domain/entities"
-	"github.com/mazen160/go-random"
 	"testing"
+
+	"github.com/mazen160/go-random"
+
+	"github.com/bekzod003/link-clean/internal/domain/entities"
 )
 
 func createUser(ctx context.Context, storage *userStorage) (int64, error) {
@@ -47,7 +49,7 @@ func TestUserStorage_Create(t *testing.T) {
 	client := newClient()
 	storage := NewUserStorage(client)
 
-	ctx, cancel := context.WithTimeout(context.Background(), deafultTimeOut)
+	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeOut)
 	defer cancel()
 
 	userID, err := createUser(ctx, storage)
@@ -63,7 +65,7 @@ func TestUserStorage_Get(t *testing.T) {
 	client := newClient()
 	storage := NewUserStorage(client)
 
-	ctx, cancel := context.WithTimeout(context.Background(), deafultTimeOut)
+	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeOut)
 	defer cancel()
 
 	id, err := createUser(ctx, storage)
@@ -85,7 +87,7 @@ func TestUserStorage_Get(t *testing.T) {
 func TestUserStorage_Update(t *testing.T) {
 	storage := NewUserStorage(newClient())
 
-	ctx, cancel := context.WithTimeout(context.Background(), deafultTimeOut)
+	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeOut)
 	defer cancel()
 
 	id, err := createUser(ctx, storage)

@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"context"
-	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
 	"time"
+
+	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
 
 	"github.com/bekzod003/link-clean/internal/domain/entities"
 )
@@ -35,7 +36,7 @@ func (t *tagStorage) Get(ctx context.Context, id int64) (*entities.Tag, error) {
 			title,
 			user_id,
 			created_at,
-			updated_at,
+			updated_at
 		FROM tags WHERE id = $1 AND deleted_at = 0`,
 		id,
 	)
@@ -61,7 +62,7 @@ func (t *tagStorage) GetByUser(ctx context.Context, userID int64) ([]*entities.T
 			title,
 			user_id,
 			created_at,
-			updated_at,
+			updated_at
 		FROM tags WHERE user_id = $1 AND deleted_at = 0`,
 		userID,
 	)

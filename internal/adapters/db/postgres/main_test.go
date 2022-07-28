@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	deafultTimeOut = time.Second * 10
+	defaultTimeOut = time.Second * 10
 )
 
 func newClient() postgresql.Client {
