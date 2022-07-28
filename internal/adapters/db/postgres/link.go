@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"context"
-	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
 	"time"
+
+	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
 
 	"github.com/bekzod003/link-clean/internal/domain/entities"
 )
@@ -44,7 +45,7 @@ func (l *linkStorage) Get(ctx context.Context, id int64) (*entities.Link, error)
 			user_id,
 			tag_id,
 			created_at,
-			updated_at,
+			updated_at
 		FROM links WHERE id = $1 AND deleted_at = 0`,
 		id,
 	).Scan(
@@ -73,7 +74,7 @@ func (l *linkStorage) GetByUser(ctx context.Context, userID int64) ([]*entities.
 			user_id,
 			tag_id,
 			created_at,
-			updated_at,
+			updated_at
 		FROM links WHERE user_id = $1 AND deleted_at = 0`,
 		userID,
 	)
@@ -114,7 +115,7 @@ func (l *linkStorage) GetByTag(ctx context.Context, tagID int64) ([]*entities.Li
 			user_id,
 			tag_id,
 			created_at,
-			updated_at,
+			updated_at
 		FROM links WHERE tag_id = $1 AND deleted_at = 0`,
 		tagID,
 	)
