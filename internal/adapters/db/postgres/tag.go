@@ -17,14 +17,14 @@ func NewTagStorage(db postgresql.Client) *tagStorage {
 	return &tagStorage{db: db}
 }
 
-func (t *tagStorage) Create(ctx context.Context, tag *entities.CreateTag) (id int64, err error) {
-	err = t.db.QueryRow(
+func (t *tagStorage) Create(ctx context.Context, tag *entities.Tag) (*entities.Tag, error) {
+	err := t.db.QueryRow(
 		ctx,
 		"INSERT INTO tags (title, user_id) VALUES ($1, $2) RETURNING id",
 		tag.Title,
 		tag.UserID,
-	).Scan(&id)
-	return id, err
+	).Scan(&tag.ID)
+	return tag, err
 }
 
 func (t *tagStorage) Get(ctx context.Context, id int64) (*entities.Tag, error) {
@@ -41,7 +41,7 @@ func (t *tagStorage) Get(ctx context.Context, id int64) (*entities.Tag, error) {
 		id,
 	)
 	if err := row.Scan(
-		&tag.Id,
+		&tag.ID,
 		&tag.Title,
 		&tag.UserID,
 		&tag.CreatedAt,
@@ -75,7 +75,7 @@ func (t *tagStorage) GetByUser(ctx context.Context, userID int64) ([]*entities.T
 	for rows.Next() {
 		var tag entities.Tag
 		if err := rows.Scan(
-			&tag.Id,
+			&tag.ID,
 			&tag.Title,
 			&tag.UserID,
 			&tag.CreatedAt,
