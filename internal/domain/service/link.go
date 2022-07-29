@@ -20,14 +20,14 @@ type linkStorage interface {
 }
 
 type linkService struct {
-	linkStorage linkStorage
-	log         logger.LoggerI
+	storage linkStorage
+	log     logger.LoggerI
 }
 
 func NewLinkService(linkStorage linkStorage, log logger.LoggerI) *linkService {
 	return &linkService{
-		linkStorage: linkStorage,
-		log:         log,
+		storage: linkStorage,
+		log:     log,
 	}
 }
 
@@ -37,7 +37,7 @@ func (ls *linkService) Create(ctx context.Context, link *entities.Link) (*entiti
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
 
-	link, err := ls.linkStorage.Create(ctx, link)
+	link, err := ls.storage.Create(ctx, link)
 	if err != nil {
 		ls.log.Error("Error while creating link", zap.Error(err))
 		return nil, err
@@ -53,7 +53,7 @@ func (ls *linkService) Get(ctx context.Context, id int64) (*entities.Link, error
 	ctx, cancel := context.WithTimeout(ctx, time.Second*5)
 	defer cancel()
 
-	link, err := ls.linkStorage.Get(ctx, id)
+	link, err := ls.storage.Get(ctx, id)
 
 	if err != nil {
 		ls.log.Error("Error while getting link", zap.Error(err))
@@ -70,7 +70,7 @@ func (ls *linkService) GetByUser(ctx context.Context, userID int64) ([]*entities
 	ctx, cancel := context.WithTimeout(ctx, time.Second*5)
 	defer cancel()
 
-	links, err := ls.linkStorage.GetByUser(ctx, userID)
+	links, err := ls.storage.GetByUser(ctx, userID)
 	if err != nil {
 		ls.log.Error("Error while getting link by user", zap.Error(err))
 		return nil, err
@@ -86,7 +86,7 @@ func (ls *linkService) GetByTag(ctx context.Context, tagID int64) ([]*entities.L
 	ctx, cancel := context.WithTimeout(ctx, time.Second*5)
 	defer cancel()
 
-	links, err := ls.linkStorage.GetByTag(ctx, tagID)
+	links, err := ls.storage.GetByTag(ctx, tagID)
 	if err != nil {
 		ls.log.Error("Error while getting link by tag", zap.Error(err))
 		return nil, err
@@ -102,7 +102,7 @@ func (ls *linkService) Update(ctx context.Context, link *entities.Link) (err err
 	ctx, cancel := context.WithTimeout(ctx, time.Second*5)
 	defer cancel()
 
-	if err = ls.linkStorage.Update(ctx, link); err != nil {
+	if err = ls.storage.Update(ctx, link); err != nil {
 		ls.log.Error("Error while updating link", zap.Error(err))
 		return
 	}
@@ -117,7 +117,7 @@ func (ls *linkService) Delete(ctx context.Context, id int64) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, time.Second*5)
 	defer cancel()
 
-	if err = ls.linkStorage.Delete(ctx, id); err != nil {
+	if err = ls.storage.Delete(ctx, id); err != nil {
 		ls.log.Error("Error while deleting link", zap.Error(err))
 		return
 	}
