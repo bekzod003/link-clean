@@ -63,7 +63,8 @@ func (t *tagStorage) GetByUser(ctx context.Context, userID int64) ([]*entities.T
 			user_id,
 			created_at,
 			updated_at
-		FROM tags WHERE user_id = $1 AND deleted_at = 0`,
+		FROM tags WHERE user_id = $1 AND deleted_at = 0
+		ORDER BY id DESC`,
 		userID,
 	)
 	if err != nil {

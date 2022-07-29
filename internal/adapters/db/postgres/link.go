@@ -48,7 +48,8 @@ func (l *linkStorage) Get(ctx context.Context, id int64) (*entities.Link, error)
 			tag_id,
 			created_at,
 			updated_at
-		FROM links WHERE id = $1 AND deleted_at = 0`,
+		FROM links WHERE id = $1 AND deleted_at = 0
+		ORDER BY id DESC`,
 		id,
 	).Scan(
 		&link.ID,
@@ -77,7 +78,8 @@ func (l *linkStorage) GetByUser(ctx context.Context, userID int64) ([]*entities.
 			tag_id,
 			created_at,
 			updated_at
-		FROM links WHERE user_id = $1 AND deleted_at = 0`,
+		FROM links WHERE user_id = $1 AND deleted_at = 0
+		ORDER BY id DESC`,
 		userID,
 	)
 	if err != nil {
@@ -118,7 +120,8 @@ func (l *linkStorage) GetByTag(ctx context.Context, tagID int64) ([]*entities.Li
 			tag_id,
 			created_at,
 			updated_at
-		FROM links WHERE tag_id = $1 AND deleted_at = 0`,
+		FROM links WHERE tag_id = $1 AND deleted_at = 0
+		ORDER BY id DESC`,
 		tagID,
 	)
 	if err != nil {
