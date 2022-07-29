@@ -21,12 +21,12 @@ func createTag(ctx context.Context, storage *tagStorage) (tagID, userID int64, e
 		return 0, 0, err
 	}
 
-	tagID, err = storage.Create(ctx, &entities.CreateTag{
+	tag, err := storage.Create(ctx, &entities.Tag{
 		Title:  title,
 		UserID: userID,
 	})
 
-	return tagID, userID, err
+	return tag.ID, userID, err
 }
 
 func createTags(ctx context.Context, storage *tagStorage) (userID int64, err error) {
@@ -41,7 +41,7 @@ func createTags(ctx context.Context, storage *tagStorage) (userID int64, err err
 			return 0, err
 		}
 
-		_, err = storage.Create(ctx, &entities.CreateTag{
+		_, err = storage.Create(ctx, &entities.Tag{
 			Title:  title,
 			UserID: userID,
 		})
