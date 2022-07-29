@@ -2,18 +2,20 @@ package link
 
 import (
 	"context"
+
+	"go.uber.org/zap"
+
 	"github.com/bekzod003/link-clean/internal/domain/entities"
 	"github.com/bekzod003/link-clean/pkg/logger"
-	"go.uber.org/zap"
 )
 
 type linkService interface {
-	Create(ctx context.Context, link *entities.Link) error
+	Create(ctx context.Context, link *entities.Link) (*entities.Link, error)
 	Get(ctx context.Context, id int64) (*entities.Link, error)
 	GetByUser(ctx context.Context, userID int64) ([]*entities.Link, error)
 	GetByTag(ctx context.Context, tagID int64) ([]*entities.Link, error)
-	Update(ctx context.Context, link *entities.Link) error
-	Delete(ctx context.Context, id int64) error
+	Update(ctx context.Context, link *entities.Link) (err error)
+	Delete(ctx context.Context, id int64) (err error)
 }
 
 type tagService interface {
