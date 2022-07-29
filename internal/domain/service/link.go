@@ -2,12 +2,13 @@ package service
 
 import (
 	"context"
+
 	"github.com/bekzod003/link-clean/internal/domain/entities"
 	"github.com/bekzod003/link-clean/pkg/logger"
 )
 
 type linkStorage interface {
-	Create(ctx context.Context, link *entities.Link) error
+	Create(ctx context.Context, link *entities.Link) (*entities.Link, error)
 	Get(ctx context.Context, id int64) (*entities.Link, error)
 	GetByUser(ctx context.Context, userID int64) ([]*entities.Link, error)
 	GetByTag(ctx context.Context, tagID int64) ([]*entities.Link, error)

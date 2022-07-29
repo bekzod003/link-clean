@@ -17,20 +17,22 @@ func NewLinkStorage(db postgresql.Client) *linkStorage {
 	return &linkStorage{db: db}
 }
 
-func (l *linkStorage) Create(ctx context.Context, link *entities.Link) error {
-	_, err := l.db.Exec(
+func (l *linkStorage) Create(ctx context.Context, link *entities.Link) (*entities.Link, error) {
+	err := l.db.QueryRow(
 		ctx,
 		`INSERT INTO "links"
-			(title, url, user_id, tag_id)
+			(title, url, user_id, tag_id, description)
 		VALUES
-			($1, $2, $3, $4)`,
+			($1, $2, $3, $4, $5)
+			RETURNING id`,
 		link.Title,
 		link.URL,
 		link.UserID,
 		link.TagID,
-	)
+		link.Description,
+	).Scan(&link.ID)
 
-	return err
+	return link, err
 }
 
 func (l *linkStorage) Get(ctx context.Context, id int64) (*entities.Link, error) {
