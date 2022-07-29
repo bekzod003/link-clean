@@ -2,6 +2,9 @@ package service
 
 import (
 	"context"
+	"time"
+
+	"go.uber.org/zap"
 
 	"github.com/bekzod003/link-clean/internal/domain/entities"
 	"github.com/bekzod003/link-clean/pkg/logger"
@@ -25,17 +28,51 @@ func NewUserService(storage userStorage, log logger.LoggerI) *userService {
 	}
 }
 
-func (s *userService) Create(ctx context.Context, user *entities.User) (int64, error) {
-	s.log.Info("Create user", logger.Any("user", user))
-	return s.storage.Create(context.TODO(), user)
+func (s *userService) Create(ctx context.Context, user *entities.User) (*entities.User, error) {
+	s.log.Info("Create user request", logger.Any("user", user))
+
+	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
+	defer cancel()
+
+	userID, err := s.storage.Create(ctx, user)
+	if err != nil {
+		s.log.Error("Error while creating user", zap.Error(err))
+		return nil, err
+	}
+	user.ID = userID
+
+	s.log.Info("Successfully user has been created", zap.Any("user", user))
+	return user, nil
 }
 
-func (s *userService) Update(ctx context.Context, user *entities.User) error {
-	s.log.Info("Update user", logger.Any("user", user))
-	return s.storage.Update(context.TODO(), user)
+func (s *userService) Update(ctx context.Context, user *entities.User) (err error) {
+	s.log.Info("Update user request", logger.Any("user", user))
+
+	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
+	defer cancel()
+
+	if err = s.storage.Update(ctx, user); err != nil {
+		s.log.Error("Error while updating user", zap.Error(err))
+		return
+	}
+
+	s.log.Info("Successfully updated user")
+	return
 }
 
 func (s *userService) Get(ctx context.Context, id int64) (*entities.User, error) {
-	s.log.Info("Get user", logger.Any("id", id))
+	s.log.Info("Get user request", logger.Any("id", id))
+
+	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
+	defer cancel()
+
+	user, err := s.storage.Get(ctx, id)
+	if err != nil {
+		s.log.Error("Error while getting user by id", zap.Error(err))
+		return nil, err
+	}
+
+	s.log.Info("Successfully updated user", zap.Any("user", user))
+
 	return s.storage.Get(context.TODO(), id)
 }

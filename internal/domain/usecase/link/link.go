@@ -19,16 +19,16 @@ type linkService interface {
 }
 
 type tagService interface {
-	Create(ctx context.Context, tag *entities.CreateTag) (id int64, err error)
+	Create(ctx context.Context, tag *entities.Tag) (*entities.Tag, error)
 	Get(ctx context.Context, id int64) (*entities.Tag, error)
 	GetByUser(ctx context.Context, userID int64) ([]*entities.Tag, error)
-	Update(ctx context.Context, tag *entities.UpdateTag) error
-	Delete(ctx context.Context, id int64) error
+	Update(ctx context.Context, tag *entities.UpdateTag) (err error)
+	Delete(ctx context.Context, id int64) (err error)
 }
 
 type userService interface {
-	Create(ctx context.Context, user *entities.User) (int64, error)
-	Update(ctx context.Context, user *entities.User) error
+	Create(ctx context.Context, user *entities.User) (*entities.User, error)
+	Update(ctx context.Context, user *entities.User) (err error)
 	Get(ctx context.Context, id int64) (*entities.User, error)
 }
 
