@@ -30,7 +30,6 @@ func NewTagService(storage TagStorage, log logger.LoggerI) *tagService {
 	}
 }
 
-// @TODO: implement tag service
 func (t *tagService) Create(ctx context.Context, tag *entities.Tag) (*entities.Tag, error) {
 	t.log.Info("Create tag request", zap.Any("req", tag))
 
