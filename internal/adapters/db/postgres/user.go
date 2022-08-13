@@ -36,7 +36,8 @@ func (u *userStorage) CreateWithGivenId(ctx context.Context, user *entities.User
 		`INSERT INTO "users"
 			(id, username, first_name, last_name)
 			VALUES
-				((SELECT id FROM "users" ORDER BY id DESC LIMIT 1), $1, $2, $3)`,
+				($1, $2, $3, $4)`,
+		user.ID,
 		user.Username,
 		user.FirstName,
 		user.LastName,

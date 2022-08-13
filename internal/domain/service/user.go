@@ -42,15 +42,15 @@ func (s *userService) Create(ctx context.Context, user *entities.User) (*entitie
 
 	if user.ID == 0 {
 		userID, err = s.storage.Create(ctx, user)
+		user.ID = userID
 	} else {
-		userID, err = s.storage.Create(ctx, user)
+		err = s.storage.CreateWithGivenId(ctx, user)
 	}
 
 	if err != nil {
 		s.log.Error("Error while creating user", zap.Error(err))
 		return nil, err
 	}
-	user.ID = userID
 
 	s.log.Info("Successfully user has been created", zap.Any("user", user))
 	return user, nil

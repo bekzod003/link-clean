@@ -21,7 +21,20 @@ func createUser(ctx context.Context, storage *userStorage) (int64, error) {
 		user,
 	)
 	return userID, err
+}
 
+func createUserWithGivenId(ctx context.Context, storage *userStorage) (int64, error) {
+	user, err := fillUserFields()
+	user.ID = 160
+	if err != nil {
+		return 0, err
+	}
+
+	err = storage.CreateWithGivenId(
+		ctx,
+		user,
+	)
+	return user.ID, err
 }
 
 func fillUserFields() (*entities.User, error) {
@@ -53,6 +66,22 @@ func TestUserStorage_Create(t *testing.T) {
 	defer cancel()
 
 	userID, err := createUser(ctx, storage)
+	if err != nil {
+		t.Error("Error while creating user:", err)
+	}
+	if userID == 0 {
+		t.Error("UserID is equal to 0!")
+	}
+}
+
+func TestUserStorage_CreateWithGivenId(t *testing.T) {
+	client := newClient()
+	storage := NewUserStorage(client)
+
+	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeOut)
+	defer cancel()
+
+	userID, err := createUserWithGivenId(ctx, storage)
 	if err != nil {
 		t.Error("Error while creating user:", err)
 	}
