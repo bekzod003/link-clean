@@ -57,7 +57,7 @@ func getConfig() *Config {
 	var err error
 
 	if err = godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
+		println("Error loading .env file", err.Error())
 	}
 
 	cfgTemp := Config{}
