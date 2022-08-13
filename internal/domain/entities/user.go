@@ -9,9 +9,3 @@ type User struct {
 	LastName  string    `json:"last_name"`
 	CreatedAt time.Time `json:"-"`
 }
-
-type CreateUser struct {
-	Username  string `json:"username"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-}

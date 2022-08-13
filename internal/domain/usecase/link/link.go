@@ -2,6 +2,7 @@ package link
 
 import (
 	"context"
+	"time"
 
 	"go.uber.org/zap"
 
@@ -32,7 +33,7 @@ type userService interface {
 	Get(ctx context.Context, id int64) (*entities.User, error)
 }
 
-type LinkUsecase struct {
+type UsecaseLink struct {
 	linkService linkService
 	tagService  tagService
 	userService userService
@@ -47,8 +48,8 @@ type ConstructorRequest struct {
 	Log         logger.LoggerI
 }
 
-func NewLinkUsecase(request ConstructorRequest) *LinkUsecase {
-	return &LinkUsecase{
+func NewLinkUsecase(request ConstructorRequest) *UsecaseLink {
+	return &UsecaseLink{
 		linkService: request.LinkService,
 		tagService:  request.TagService,
 		userService: request.UserService,
@@ -56,7 +57,32 @@ func NewLinkUsecase(request ConstructorRequest) *LinkUsecase {
 	}
 }
 
-func (l *LinkUsecase) GetByUser(userId int64) ([]*entities.Link, error) {
+func (l *UsecaseLink) CreateUser(user *User) (*User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+
+	l.log.Info("usecase Create createUserResp request", zap.Any("request", user))
+	createUserResp, err := l.userService.Create(
+		ctx,
+		&entities.User{
+			ID:        user.ID,
+			Username:  user.Username,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+		},
+	)
+	if err != nil {
+		l.log.Error("Error while creating createUserResp", zap.Error(err))
+		return nil, err
+	}
+
+	user.ID = createUserResp.ID
+	user.CreatedAt = createUserResp.CreatedAt
+
+	return user, nil
+}
+
+func (l *UsecaseLink) GetByUser(userId int64) ([]*entities.Link, error) {
 	links, err := l.linkService.GetByUser(context.TODO(), userId)
 	if err != nil {
 		l.log.Error("GetByUser", logger.Any("userId", userId), logger.Error(err))
@@ -65,7 +91,7 @@ func (l *LinkUsecase) GetByUser(userId int64) ([]*entities.Link, error) {
 	return links, nil
 }
 
-func (l *LinkUsecase) GetUser(id int64) (*entities.User, error) {
+func (l *UsecaseLink) GetUser(id int64) (*entities.User, error) {
 	l.log.Info("Get user request:", zap.Any("req", id))
 	return l.userService.Get(context.TODO(), id)
 }
