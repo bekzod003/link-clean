@@ -10,6 +10,7 @@ import (
 	"github.com/bekzod003/link-clean/config"
 	"github.com/bekzod003/link-clean/internal/adapters/db/postgres"
 	"github.com/bekzod003/link-clean/internal/controller/tgbotapi"
+	"github.com/bekzod003/link-clean/internal/controller/tgbotapi/bot_handler"
 	"github.com/bekzod003/link-clean/internal/domain/service"
 	"github.com/bekzod003/link-clean/internal/domain/usecase/link"
 	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
@@ -63,8 +64,8 @@ func Run(cfg *config.Config) {
 	if err != nil {
 		log.Fatal("Error while getting new bot", zap.Error(err))
 	}
-
-	tgbotapi.NewTelegramBot(bot, useCase, log).Run()
+	botHandlers := bot_handler.NewTelegramBotHandler(useCase, log)
+	tgbotapi.NewTelegramBot(bot, botHandlers, log).Run()
 }
 
 func getPostgresClientConfig(cfg *config.Config) postgresql.ClientConfig {
