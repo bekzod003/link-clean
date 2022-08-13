@@ -1,10 +1,12 @@
 package config
 
 import (
-	"github.com/bekzod003/link-clean/pkg/logger"
-	"github.com/gin-gonic/gin"
 	"log"
 	"sync"
+
+	"github.com/gin-gonic/gin"
+
+	"github.com/bekzod003/link-clean/pkg/logger"
 
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/joho/godotenv"
@@ -30,6 +32,10 @@ type Config struct {
 			MaxConnLifetimeMinute   int   `env:"POSTGRES_CONN_LIFE_MINUTES" env-default:"30"`
 			HealthCheckPeriodMinute int   `env:"POSTGRES_HEALTH_CHECK_PERIOD_MINUTES" env-default:"10"`
 		}
+	}
+
+	Telegram struct {
+		BotToken string `env:"TELEGRAM_BOT_TOKEN" env-required:"true"`
 	}
 
 	LoggerLevel string `env-default:"debug"`

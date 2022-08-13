@@ -36,7 +36,8 @@ func (u *userStorage) CreateWithGivenId(ctx context.Context, user *entities.User
 		`INSERT INTO "users"
 			(id, username, first_name, last_name)
 			VALUES
-				($1, $2, $3, $4)`,
+				($1, $2, $3, $4)
+			ON CONFLICT(id) DO NOTHING`,
 		user.ID,
 		user.Username,
 		user.FirstName,

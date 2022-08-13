@@ -2,15 +2,19 @@ package app
 
 import (
 	"context"
-	"fmt"
+	"time"
+
+	"go.uber.org/zap"
+	"gopkg.in/telebot.v3"
+
 	"github.com/bekzod003/link-clean/config"
 	"github.com/bekzod003/link-clean/internal/adapters/db/postgres"
+	"github.com/bekzod003/link-clean/internal/controller/tgbotapi"
+	"github.com/bekzod003/link-clean/internal/controller/tgbotapi/bot_handler"
 	"github.com/bekzod003/link-clean/internal/domain/service"
 	"github.com/bekzod003/link-clean/internal/domain/usecase/link"
 	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
 	"github.com/bekzod003/link-clean/pkg/logger"
-	"go.uber.org/zap"
-	"time"
 )
 
 func Run(cfg *config.Config) {
@@ -47,12 +51,21 @@ func Run(cfg *config.Config) {
 		Log:         log,
 	})
 
-	// testing, @TODO: remove it)
-	user, err := useCase.GetUser(1)
-	if err != nil {
-		log.Error("Error while getting user", zap.Error(err))
+	botSettings := telebot.Settings{
+		Token:  cfg.Telegram.BotToken,
+		Poller: &telebot.LongPoller{Timeout: 10 * time.Second},
+		OnError: func(err error, c telebot.Context) {
+			log.Error("Error in telegram bot", zap.Error(err))
+			c.Send("Error has been occurred: " + err.Error())
+		},
 	}
-	fmt.Printf("Some random user: %+v\n", user)
+
+	bot, err := telebot.NewBot(botSettings)
+	if err != nil {
+		log.Fatal("Error while getting new bot", zap.Error(err))
+	}
+	botHandlers := bot_handler.NewTelegramBotHandler(useCase, log)
+	tgbotapi.NewTelegramBot(bot, botHandlers, log).Run()
 }
 
 func getPostgresClientConfig(cfg *config.Config) postgresql.ClientConfig {
