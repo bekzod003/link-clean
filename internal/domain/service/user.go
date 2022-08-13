@@ -12,6 +12,7 @@ import (
 
 type userStorage interface {
 	Create(ctx context.Context, user *entities.User) (int64, error)
+	CreateWithGivenId(ctx context.Context, user *entities.User) error
 	Update(ctx context.Context, user *entities.User) error
 	Get(ctx context.Context, id int64) (*entities.User, error)
 }
@@ -34,7 +35,17 @@ func (s *userService) Create(ctx context.Context, user *entities.User) (*entitie
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
 
-	userID, err := s.storage.Create(ctx, user)
+	var (
+		userID int64
+		err    error
+	)
+
+	if user.ID == 0 {
+		userID, err = s.storage.Create(ctx, user)
+	} else {
+		userID, err = s.storage.Create(ctx, user)
+	}
+
 	if err != nil {
 		s.log.Error("Error while creating user", zap.Error(err))
 		return nil, err

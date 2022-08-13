@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+
 	"github.com/bekzod003/link-clean/internal/domain/entities"
 	"github.com/bekzod003/link-clean/pkg/database/client/postgresql"
 )
@@ -27,6 +28,20 @@ func (u *userStorage) Create(ctx context.Context, user *entities.User) (int64, e
 		user.LastName,
 	).Scan(&user.ID)
 	return user.ID, err
+}
+
+func (u *userStorage) CreateWithGivenId(ctx context.Context, user *entities.User) error {
+	_, err := u.db.Exec(
+		ctx,
+		`INSERT INTO "users"
+			(id, username, first_name, last_name)
+			VALUES
+				((SELECT id FROM "users" ORDER BY id DESC LIMIT 1), $1, $2, $3)`,
+		user.Username,
+		user.FirstName,
+		user.LastName,
+	)
+	return err
 }
 
 func (u *userStorage) Update(ctx context.Context, user *entities.User) error {
