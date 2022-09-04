@@ -3,6 +3,7 @@ package tgbotapi
 import (
 	"gopkg.in/telebot.v3"
 
+	"github.com/bekzod003/link-clean/internal/controller/tgbotapi/bot_buttons"
 	"github.com/bekzod003/link-clean/internal/controller/tgbotapi/bot_handler"
 	"github.com/bekzod003/link-clean/pkg/logger"
 )
@@ -25,6 +26,7 @@ func (tgbot *TelegramBot) Run() {
 	tgbot.log.Info("Running telegram bot")
 
 	tgbot.bot.Handle("/start", tgbot.handlers.Start)
+	tgbot.bot.Handle(&bot_buttons.BtnHelp, tgbot.handlers.Alo)
 	tgbot.bot.Handle("/alo", tgbot.handlers.Alo)
 
 	tgbot.log.Info("Telegram bot is starting...")

@@ -47,6 +47,7 @@ func (h *TelegramBotHandler) Start(c telebot.Context) error {
 
 	h.log.Info("Successfully has been created user", zap.Any("user", user))
 	// TODO: greeting message with buttons)
+
 	c.Send("Hello, this is greeting message!")
 	return nil
 }
