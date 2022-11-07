@@ -3,12 +3,15 @@ package postgresql
 import (
 	"context"
 	"fmt"
+	"log"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"log"
-	"sync"
-	"time"
 )
 
 type Client interface {
@@ -20,13 +23,13 @@ type Client interface {
 	Begin(ctx context.Context) (pgx.Tx, error)
 	BeginTx(ctx context.Context, txOptions pgx.TxOptions) (pgx.Tx, error)
 	BeginTxFunc(ctx context.Context, txOptions pgx.TxOptions, f func(pgx.Tx) error) error
-	//SendBatch(ctx context.Context, b *pgx.Batch) pgx.BatchResults
-	//CopyFrom(ctx context.Context, tableName pgx.Identifier, columnNames []string, rowSrc pgx.CopyFromSource) (int64, error)
-	//BeginFunc(ctx context.Context, f func(pgx.Tx) error) error
-	//Ping(ctx context.Context) error
+	// SendBatch(ctx context.Context, b *pgx.Batch) pgx.BatchResults
+	// CopyFrom(ctx context.Context, tableName pgx.Identifier, columnNames []string, rowSrc pgx.CopyFromSource) (int64, error)
+	// BeginFunc(ctx context.Context, f func(pgx.Tx) error) error
+	// Ping(ctx context.Context) error
 }
 
-//structure used to create new psql client
+// structure used to create new psql client
 type ClientConfig struct {
 	Login    string
 	Password string
@@ -93,4 +96,26 @@ func getConnectionPool(ctx context.Context, configRequest PoolConfig) (pool *pgx
 	}
 
 	return
+}
+
+func NamedQuery(c Client, ctx context.Context, sql string, args map[string]interface{}) (pgx.Rows, error) {
+	query, arguments := replaceQueryParams(sql, args)
+	return c.Query(ctx, query, arguments...)
+}
+
+func replaceQueryParams(namedQuery string, params map[string]interface{}) (string, []interface{}) {
+	var (
+		i    int = 1
+		args []interface{}
+	)
+
+	for k, v := range params {
+		if k != "" && strings.Contains(namedQuery, ":"+k) {
+			namedQuery = strings.ReplaceAll(namedQuery, ":"+k, "$"+strconv.Itoa(i))
+			args = append(args, v)
+			i++
+		}
+	}
+
+	return namedQuery, args
 }
